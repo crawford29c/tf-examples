@@ -36,19 +36,19 @@ resource "ibm_is_security_group_rule" "allow_https_limited" {
 # create 3 vpc address prefixes in zones 1, 2 and 3 referencing the vpc
 resource "ibm_is_vpc_address_prefix" "new_vpc_address_prefix" {
   count = 3
-  name = "${var.cidrnameprefix}-${count + 2}"
-  zone = "${var.region}-${count + 2}"
+  name = "${var.cidrnameprefix}-${count.index + 1}"
+  zone = "${var.region}-${count.index + 21"
   vpc = "${ibm_is_vpc.new_vpc.id}"
-  cidr = "${var.cidraddresslist[count]}"
+  cidr = "${var.cidraddresslist[count.index]}"
 }
 
 # create 3 subnets in zones 1, 2 and 3 referencing the address prefixes and vpc
 resource "ibm_is_subnet" "new_subnet" {
   count = 3
-  name = "${var.subnetnameprefix}-${count + 2}"
+  name = "${var.subnetnameprefix}-${count.index + 1}"
   vpc  = "${ibm_is_vpc.new_vpc.id}"
-  zone = "${var.region}-${count + 2}"
-  ipv4_cidr_block = "${var.subnetlist[count]}"
+  zone = "${var.region}-${count.index + 1}"
+  ipv4_cidr_block = "${var.subnetlist[count.index]}"
   depends_on = ["ibm_is_vpc_address_prefix.new_vpc_address_prefix"]
 }
 # make ssh key details visible by using name in variables.tf
