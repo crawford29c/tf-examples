@@ -34,23 +34,57 @@ resource "ibm_is_security_group_rule" "allow_https_limited" {
   }
 }
 # create 3 vpc address prefixes in zones 1, 2 and 3 referencing the vpc
+#resource "ibm_is_vpc_address_prefix" "new_vpc_address_prefix" {
+#  count = 3
+#  name = "${var.cidrnameprefix}-${count.index + 1}"
+#  zone = "${var.region}-${count.index + 1}"
+#  vpc = "${ibm_is_vpc.new_vpc.id}"
+#  cidr = "${var.cidraddresslist[count.index]}"
+#}
+
+# create 2 vpc address prefixes in zones 1 and 3 referencing the vpc
 resource "ibm_is_vpc_address_prefix" "new_vpc_address_prefix" {
-  count = 3
-  name = "${var.cidrnameprefix}-${count.index + 1}"
-  zone = "${var.region}-${count.index + 1}"
+  name = "${var.cidrnameprefix}-${1}"
+  zone = "${var.region}-${1}"
   vpc = "${ibm_is_vpc.new_vpc.id}"
-  cidr = "${var.cidraddresslist[count.index]}"
+  cidr = "${var.cidraddresslist[0]}"
+}
+
+resource "ibm_is_vpc_address_prefix" "new_vpc_address_prefix" {
+  name = "${var.cidrnameprefix}-${3}"
+  zone = "${var.region}-${3}"
+  vpc = "${ibm_is_vpc.new_vpc.id}"
+  cidr = "${var.cidraddresslist[1]}"
 }
 
 # create 3 subnets in zones 1, 2 and 3 referencing the address prefixes and vpc
+#resource "ibm_is_subnet" "new_subnet" {
+#  count = 3
+#  name = "${var.subnetnameprefix}-${count.index + 1}"
+#  vpc  = "${ibm_is_vpc.new_vpc.id}"
+#  zone = "${var.region}-${count.index + 1}"
+#  ipv4_cidr_block = "${var.subnetlist[count.index]}"
+#  depends_on = ["ibm_is_vpc_address_prefix.new_vpc_address_prefix"]
+#}
+
+# create 2 subnets in zones 1 and 3 referencing the address prefixes and vpc
 resource "ibm_is_subnet" "new_subnet" {
-  count = 3
-  name = "${var.subnetnameprefix}-${count.index + 1}"
+  name = "${var.subnetnameprefix}-${1}"
   vpc  = "${ibm_is_vpc.new_vpc.id}"
-  zone = "${var.region}-${count.index + 1}"
-  ipv4_cidr_block = "${var.subnetlist[count.index]}"
+  zone = "${var.region}-${1}"
+  ipv4_cidr_block = "${var.subnetlist[0]}"
   depends_on = ["ibm_is_vpc_address_prefix.new_vpc_address_prefix"]
 }
+
+# create 2 subnets in zones 1 and 3 referencing the address prefixes and vpc
+resource "ibm_is_subnet" "new_subnet" {
+  name = "${var.subnetnameprefix}-${3}"
+  vpc  = "${ibm_is_vpc.new_vpc.id}"
+  zone = "${var.region}-${3}"
+  ipv4_cidr_block = "${var.subnetlist[1]}"
+  depends_on = ["ibm_is_vpc_address_prefix.new_vpc_address_prefix"]
+}
+
 # make ssh key details visible by using name in variables.tf
 data ibm_is_ssh_key "ssh_key_id" {
   name = "${var.ssh_key}"
