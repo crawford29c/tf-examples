@@ -37,7 +37,7 @@ resource "ibm_is_security_group_rule" "allow_https_limited" {
 resource "ibm_is_vpc_address_prefix" "new_vpc_address_prefix" {
   count = 3
   name = "${var.cidrnameprefix}-${count.index + 1}"
-  zone = "${var.region}-${count.index + 21"
+  zone = "${var.region}-${count.index + 1"
   vpc = "${ibm_is_vpc.new_vpc.id}"
   cidr = "${var.cidraddresslist[count.index]}"
 }
